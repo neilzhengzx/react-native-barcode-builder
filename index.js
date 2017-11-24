@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import barcodes from 'jsbarcode/src/barcodes';
 
 const { Surface, Shape } = ART;
+const isEqual = require('lodash').isEqual;
 
 export default class Barcode extends PureComponent {
   static propTypes = {
@@ -47,6 +48,15 @@ export default class Barcode extends PureComponent {
 
   componentDidMount() {
     this.update();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(this.state, nextState)) {
+      return true;
+    }else if (isEqual(this.state, nextState) && !isEqual(this.props, nextProps)) {
+      return true;
+    }
+    return false;
   }
 
   update() {
