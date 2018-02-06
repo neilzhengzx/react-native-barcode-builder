@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import barcodes from 'jsbarcode/src/barcodes';
 
 const { Surface, Shape } = ART;
+const isEqual = require('lodash').isEqual;
 
 export default class Barcode extends PureComponent {
   static propTypes = {
@@ -45,18 +46,17 @@ export default class Barcode extends PureComponent {
     };
   }
 
-  componentWillUpdate(nextProps) {
-    if (nextProps.value !== this.props.value) {
-      this.update(nextProps);
-    }
-  }
-
   componentDidMount() {
     this.update();
   }
 
-  componentDidUpdate() {
-    this.update();
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(this.state, nextState)) {
+      return true;
+    }else if (isEqual(this.state, nextState) && !isEqual(this.props, nextProps)) {
+      return true;
+    }
+    return false;
   }
 
   update() {
@@ -64,8 +64,14 @@ export default class Barcode extends PureComponent {
     const encoded = this.encode(this.props.value, encoder, this.props);
 
     if (encoded) {
-      this.state.bars = this.drawSvgBarCode(encoded, this.props);
-      this.state.barCodeWidth = encoded.data.length * this.props.width;
+      const bars = this.drawSvgBarCode(encoded, this.props);
+      const barCodeWidth = encoded.data.length * this.props.width;
+
+      if(bars !== this.state.bars || barCodeWidth !== this.state.barCodeWidth){
+        setTimeout(() => {
+          this.setState({bars, barCodeWidth});
+        }, 10);
+      }
     }
   }
 
@@ -175,7 +181,6 @@ export default class Barcode extends PureComponent {
 
 const styles = StyleSheet.create({
   svgContainer: {
-    alignItems: 'center',
-    padding: 10
+    alignItems: 'center'
   }
 });
