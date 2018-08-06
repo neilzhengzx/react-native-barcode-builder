@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { View, StyleSheet, ART, Text } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -7,7 +7,7 @@ import barcodes from 'jsbarcode/src/barcodes';
 const { Surface, Shape } = ART;
 const isEqual = require('lodash').isEqual;
 
-export default class Barcode extends PureComponent {
+export default class Barcode extends Component {
   static propTypes = {
     /* what the barCode stands for */
     value: PropTypes.string,
