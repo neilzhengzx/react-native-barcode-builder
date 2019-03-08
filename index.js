@@ -15,6 +15,8 @@ export default class Barcode extends Component {
     format: PropTypes.oneOf(Object.keys(barcodes)),
     /* Overide the text that is diplayed */
     text: PropTypes.string,
+     /* The width of the barcode. */
+    normalwidth: PropTypes.number,
     /* The width option is the width of a single bar. */
     width: PropTypes.number,
     /* The height of the barcode. */
@@ -35,6 +37,7 @@ export default class Barcode extends Component {
     text: undefined,
     width: 2,
     height: 100,
+    normalwidth:300,
     lineColor: '#000000',
     textColor: '#000000',
     background: '#ffffff',
@@ -172,9 +175,13 @@ export default class Barcode extends Component {
     const backgroundStyle = {
       backgroundColor: this.props.background
     };
+    let barCodeWidth = this.state.barCodeWidth;
+    if(this.props.width < 2) {
+      barCodeWidth = this.props.normalwidth;
+    }
     return (
       <View style={[styles.svgContainer, backgroundStyle]}>
-        <Surface height={this.props.height} width={this.state.barCodeWidth}>
+        <Surface height={this.props.height} width={barCodeWidth}>
           <Shape d={this.state.bars} fill={this.props.lineColor} />
         </Surface>
         { typeof(this.props.text) != 'undefined' &&
